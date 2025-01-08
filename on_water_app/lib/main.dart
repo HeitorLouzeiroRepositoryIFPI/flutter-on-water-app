@@ -4,9 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
-  // Carrega as variáveis do arquivo .env
   await dotenv.load(fileName: ".env");
-  runApp(OnWaterApp());
+  runApp(const OnWaterApp());
 }
 
 class OnWaterApp extends StatelessWidget {
@@ -15,9 +14,14 @@ class OnWaterApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'OnWater API Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: OnWaterScreen(),
+      title: 'OnWater App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+        ),
+      ),
+      home: const OnWaterScreen(),
     );
   }
 }
@@ -26,14 +30,14 @@ class OnWaterScreen extends StatefulWidget {
   const OnWaterScreen({super.key});
 
   @override
-  _OnWaterScreenState createState() => _OnWaterScreenState();
+  State<OnWaterScreen> createState() => _OnWaterScreenState();
 }
 
 class _OnWaterScreenState extends State<OnWaterScreen> {
-  final TextEditingController _latitudeController = TextEditingController();
-  final TextEditingController _longitudeController = TextEditingController();
   String _result = '';
   bool _isLoading = false;
+  final TextEditingController _latitudeController = TextEditingController();
+  final TextEditingController _longitudeController = TextEditingController();
 
   Future<void> fetchWaterData(double latitude, double longitude) async {
     setState(() {
@@ -58,7 +62,7 @@ class _OnWaterScreenState extends State<OnWaterScreen> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
-          _result = data['water'] == true ? "Está sobre água." : "Está sobre terra.";
+          _result = data['water'] == true ? "🌊 Localização está sobre água." : "🌍 Localização está sobre terra.";
         });
       } else {
         setState(() {
@@ -80,63 +84,84 @@ class _OnWaterScreenState extends State<OnWaterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("OnWater API"),
+        title: const Text("OnWater API"),
+        centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Verificar se a localização é água ou terra",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _latitudeController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: "Latitude",
-                border: OutlineInputBorder(),
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Icon(
+                Icons.water_drop_outlined,
+                size: 80,
+                color: Colors.blueAccent,
               ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: _longitudeController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: "Longitude",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                final latitude = double.tryParse(_latitudeController.text);
-                final longitude = double.tryParse(_longitudeController.text);
-
-                if (latitude == null || longitude == null) {
-                  setState(() {
-                    _result = "Por favor, insira valores válidos para latitude e longitude.";
-                  });
-                  return;
-                }
-
-                fetchWaterData(latitude, longitude);
-              },
-              child: Text("Consultar Localização"),
-            ),
-            SizedBox(height: 20),
-            if (_isLoading)
-              CircularProgressIndicator()
-            else
-              Text(
-                _result,
+              const SizedBox(height: 20),
+              const Text(
+                "Verifique se uma localização está sobre água ou terra",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
-          ],
+              const SizedBox(height: 30),
+              TextField(
+                controller: _latitudeController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Latitude",
+                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.location_on),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: _longitudeController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Longitude",
+                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.location_searching),
+                ),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton.icon(
+                onPressed: () {
+                  final latitude = double.tryParse(_latitudeController.text);
+                  final longitude = double.tryParse(_longitudeController.text);
+
+                  if (latitude == null || longitude == null) {
+                    setState(() {
+                      _result = "Por favor, insira valores válidos para latitude e longitude.";
+                    });
+                    return;
+                  }
+
+                  fetchWaterData(latitude, longitude);
+                },
+                icon: const Icon(Icons.search),
+                label: const Text("Consultar Localização"),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  textStyle: const TextStyle(fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 30),
+              if (_isLoading)
+                const Center(
+                  child: CircularProgressIndicator(),
+                )
+              else
+                Text(
+                  _result,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
