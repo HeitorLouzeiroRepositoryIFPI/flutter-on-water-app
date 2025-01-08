@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'screens/on_water_screen.dart';
+import 'package:on_water_app/screens/splash_page.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -20,7 +20,7 @@ class OnWaterApp extends StatelessWidget {
           bodyMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
         ),
       ),
-      home: const OnWaterScreen(),
+      home: const SplashScreen(),
     );
   }
 }
