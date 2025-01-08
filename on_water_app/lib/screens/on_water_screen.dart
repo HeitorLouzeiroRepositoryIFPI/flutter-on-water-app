@@ -96,7 +96,14 @@ class _OnWaterScreenState extends State<OnWaterScreen> {
                   fetchWaterData(latitude, longitude);
                 },
                 icon: const Icon(Icons.search),
-                label: const Text("Consultar Localização"),
+                label: const Text(
+                  "Consultar Localização",
+                  style: TextStyle(
+                    fontSize: 18, // Tamanho da fonte
+                    fontWeight: FontWeight.bold, // Negrito
+                    color: Colors.blue, // Cor do texto
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   textStyle: const TextStyle(fontSize: 16),
