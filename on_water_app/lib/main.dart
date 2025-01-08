@@ -30,6 +30,8 @@ class OnWaterScreen extends StatefulWidget {
 }
 
 class _OnWaterScreenState extends State<OnWaterScreen> {
+  final TextEditingController _latitudeController = TextEditingController();
+  final TextEditingController _longitudeController = TextEditingController();
   String _result = '';
   bool _isLoading = false;
 
@@ -91,8 +93,38 @@ class _OnWaterScreenState extends State<OnWaterScreen> {
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 20),
+            TextField(
+              controller: _latitudeController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "Latitude",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: _longitudeController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "Longitude",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => fetchWaterData(-10.4294517, -45.1695369),
+              onPressed: () {
+                final latitude = double.tryParse(_latitudeController.text);
+                final longitude = double.tryParse(_longitudeController.text);
+
+                if (latitude == null || longitude == null) {
+                  setState(() {
+                    _result = "Por favor, insira valores válidos para latitude e longitude.";
+                  });
+                  return;
+                }
+
+                fetchWaterData(latitude, longitude);
+              },
               child: Text("Consultar Localização"),
             ),
             SizedBox(height: 20),
