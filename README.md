@@ -257,7 +257,7 @@ We thank the following people who contributed to this project:
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See [LICENSE](LICEMSE) for more information.
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
